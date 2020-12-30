@@ -8,7 +8,6 @@ class Game:
         self.game_over = False
 
     def start_game(self):
-
         while not self.game_over:
             col = self.current_player.move(self.board)
             self.board.play(col, self.current_player.player_id)

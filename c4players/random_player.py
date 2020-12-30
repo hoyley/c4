@@ -6,5 +6,3 @@ class RandomPlayer(Player):
 
     def move(self, board):
         return random.choice(board.get_valid_moves())
-
-

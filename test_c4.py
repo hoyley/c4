@@ -13,7 +13,6 @@ class TestC4(unittest.TestCase):
         game = Game(board, player1, player2)
 
         game.start_game()
-        board.print()
         self.assertEqual(player1, game.winner)
 
     def test_draw(self):
@@ -24,6 +23,7 @@ class TestC4(unittest.TestCase):
 
         game.start_game()
         self.assertEqual(None, game.winner)
+
 
 class TestPlayer(Player):
     def __init__(self, moves, player_id):

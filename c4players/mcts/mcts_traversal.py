@@ -20,8 +20,7 @@ class MctsTraversal():
             if self.is_training \
             else self.current_node.best_score_child()
 
-        self.current_node = best_move_node
-        self.traversed_nodes.append(self.current_node)
+        self._set_next_node(best_move_node)
 
         return self.current_node.col
 
@@ -43,8 +42,11 @@ class MctsTraversal():
                 opponent_node = Node(self.current_node, self.opponent.player_id, board.last_column_played)
                 self.current_node.children.append(opponent_node)
 
-            self.traversed_nodes.append(opponent_node)
-            self.current_node = opponent_node
+            self._set_next_node(opponent_node)
+
+    def _set_next_node(self, node):
+        self.traversed_nodes.append(node)
+        self.current_node = node
 
     @staticmethod
     def _add_child_nodes_if_necessary(parent, board, player_id):

@@ -20,6 +20,12 @@ rather than copy code.
 
 - Python 3
 
+### Tests
+To execute test, run:
+```bash
+python3 test_c4.py
+```
+
 ### Execution
 
 To train and run MTCS on the Connect4 game, run the following command.

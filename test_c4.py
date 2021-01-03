@@ -33,6 +33,9 @@ class TestPlayer(Player):
     def move(self, game):
         return self.moves.pop()
 
+    def game_over(self, game):
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()

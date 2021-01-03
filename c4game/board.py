@@ -7,7 +7,7 @@ class Board:
         self.line_length = line_length
         self.board = [[Board.EMPTY_TOKEN for _ in range(self.cols)] for _ in range(self.rows)]
         self.col_counts = [0 for _ in range(self.cols)]
-        self.last_column_played = -1
+        self.last_column_played = None
 
     def play(self, col, player_value):
         if 0 > col >= self.cols:

@@ -4,5 +4,5 @@ import random
 
 class RandomPlayer(Player):
 
-    def move(self, board):
-        return random.choice(board.get_valid_moves())
+    def move(self, game):
+        return random.choice(game.board.get_valid_moves())

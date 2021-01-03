@@ -6,7 +6,7 @@ import time
 
 class Series:
 
-    def __init__(self, num_games, player1, player2, board_factory=BoardFactory(), verbose=False):
+    def __init__(self, num_games, player1, player2, is_training=False, board_factory=BoardFactory(), verbose=False):
         self.num_games = num_games
         self.games_played = 0
         self.player1 = player1
@@ -15,6 +15,7 @@ class Series:
         self.start_time = time.time()
         self.verbose = verbose
         self.total_time = None
+        self.is_training = is_training
         self.results = {0: 0,
                         self.player1.player_id: 0,
                         self.player2.player_id: 0}
@@ -22,7 +23,7 @@ class Series:
     def play(self):
         for game_num in range(self.num_games):
             board = self.board_factory.create()
-            game = Game(board, self.player1, self.player2)
+            game = Game(board, self.player1, self.player2, self.is_training)
             game.start_game()
             winner = game.winner.player_id if game.winner else 0
             self.results[winner] += 1

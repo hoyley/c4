@@ -6,5 +6,9 @@ class Player:
         self.player_id = player_id
 
     @abstractmethod
-    def move(self, board):
+    def move(self, game):
+        pass
+
+    @abstractmethod
+    def game_over(self, game):
         pass

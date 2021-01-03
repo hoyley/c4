@@ -48,13 +48,13 @@ def run_command(player1, player2, num_training, num_games, num_rows, num_cols, l
 
     print()
     print('Training...')
-    series = Series(num_training, player1, player2, board_factory)
+    series = Series(num_training, player1, player2, board_factory=board_factory, is_training=True)
     series.play()
     series.print_results()
 
     print()
     print('Playing...')
-    series = Series(num_games, player1, player2, board_factory)
+    series = Series(num_games, player1, player2, board_factory=board_factory, is_training=False)
     series.play()
     series.print_results()
 

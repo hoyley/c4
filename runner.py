@@ -3,10 +3,11 @@ from c4game.series import Series
 from c4game.board_factory import BoardFactory
 import sys
 
+
 def read_command(argv):
     from optparse import OptionParser
     usage = """
-    USAGE:      python runner.py <options>
+        USAGE:      python runner.py <options>
     """
     parser = OptionParser(usage)
 

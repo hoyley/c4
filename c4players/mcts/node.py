@@ -6,11 +6,11 @@ import random
 class Node:
     def __init__(self, parent, player_id, col):
         self.parent = parent
+        self.children = []
         self.player_id = player_id
         self.col = col
         self.visits = 0
         self.score = 0
-        self.children = []
 
     def is_leaf(self):
         return self.children == []

@@ -6,7 +6,7 @@ import time
 
 class Series:
 
-    def __init__(self, num_games, player1, player2, is_training=False, board_factory=BoardFactory(), verbose=False):
+    def __init__(self, num_games, player1, player2, is_training=False, board_factory=BoardFactory(), verbose=True):
         self.num_games = num_games
         self.games_played = 0
         self.player1 = player1

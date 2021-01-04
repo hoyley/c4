@@ -7,7 +7,7 @@ Other non-RL approaches including Convolutional Neural Networks (CNN) will be co
 | Game          | Approach                          | Status        |
 | :---          | :---                              | :---          |
 | Connect 4     | Monte Carlo Tree Search(MTCS)     | Implemented   |
-| Connect 4     | Deep Q-Network (DQN)              | Pending       |
+| Connect 4     | Deep Q-Network (DQN)              | In Progress   |
 
 
 Much of the inspiration for the Connect4 approach comes from [this article](https://codebox.net/pages/connect4). 
@@ -18,7 +18,14 @@ rather than copy code.
 
 ### Prerequisites 
 
-- Python 3
+- Python3
+- Anaconda
+
+### Setup
+```bash
+conda env create
+conda activate c4
+```
 
 ### Tests
 To execute test, run:

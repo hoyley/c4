@@ -43,3 +43,17 @@ This command will run 500,000 training simulations with player 1 using random st
 Following training, 1,000 simulations will be run.
 
 Use `python3 runner.py --help` for more detailed instructions. Todo: Implement more detailed instructions :)
+
+### Alternate Docker Setup
+
+On a Mac or PC running an Intel CPU and no discrete graphics, I've seen approximately a 20% increase in speed of 
+DQN training using pre-built GCP docker images. This depends on your processor architecture and may not work for all 
+configurations.
+
+```
+docker run -it --rm -v $(pwd):/c4 gcr.io/deeplearning-platform-release/tf2-cpu.2-0 python3 /c4/runner.py --p1strategy dqn --p2strategy mcts --numTraining 50 --numGames 10 -v
+```
+OR
+```
+./bin/docker-cpu-runner.sh --p1strategy dqn --p2strategy mcts --numTraining 50 --numGames 10 -v
+```

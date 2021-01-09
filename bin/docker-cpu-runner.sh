@@ -1,0 +1,1 @@
+docker run -it --rm -v $(pwd):/c4 gcr.io/deeplearning-platform-release/tf2-cpu.2-0 python3 /c4/runner.py "$@"

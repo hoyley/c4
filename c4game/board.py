@@ -1,4 +1,5 @@
 import copy
+from collections import deque
 
 class Board:
     PLAYER_1_TOKEN, PLAYER_2_TOKEN, EMPTY_TOKEN = 1, -1, 0

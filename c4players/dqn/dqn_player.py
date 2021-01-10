@@ -1,11 +1,10 @@
 from collections import deque
 
 import math
-import time
 import numpy as np
 import os
 import random
-from keras.layers import Dense, Flatten
+from keras.layers import Dense
 from keras.models import Sequential
 from c4game.player import Player
 

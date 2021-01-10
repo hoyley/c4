@@ -58,7 +58,7 @@ class Minimax:
     @staticmethod
     def drop_piece(board, col, player_id):
         next_board = board.copy()
-        board.play(col, player_id)
+        next_board.play(col, player_id)
         return next_board
 
     @staticmethod

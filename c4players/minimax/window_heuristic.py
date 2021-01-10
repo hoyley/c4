@@ -14,19 +14,19 @@ class WindowHeuristic:
     def score_board(self, board):
         window_counts = WindowHeuristic.WindowCounts()
 
-        # 1.) Checking horizontal orientation
+        # Count in horizontal orientation
         for row in range(board.rows):
             for col in range(board.cols - (board.line_length - 1)):
                 self.count_window_contents(board, [row, col], WindowHeuristic.EAST, window_counts)
-        # 2.) Checking vertical orientation
+        # Count in vertical orientation
         for row in range(board.rows - (board.line_length - 1)):
             for col in range(board.cols):
                 self.count_window_contents(board, [row, col], WindowHeuristic.NORTH, window_counts)
-        # 3.) Checking positive diagonal
+        # Count in positive diagonal
         for row in range(board.rows - (board.line_length - 1)):
             for col in range(board.cols - (board.line_length - 1)):
                 self.count_window_contents(board, [row, col], WindowHeuristic.NORTH_EAST, window_counts)
-        # 4.) Checking negative diagonal
+        # Count in negative diagonal
         for row in range(board.line_length - 1, board.rows):
             for col in range(board.cols - (board.line_length - 1)):
                 self.count_window_contents(board, [row, col], WindowHeuristic.SOUTH_EAST, window_counts)
@@ -72,5 +72,5 @@ class WindowHeuristic:
         def get_score(self):
             return 1 * self.num_threes \
                    + 1e4 * self.num_fours \
-                   - 1e2 * self.num_threes_opp \
-                   - 1e6 * self.num_fours_opp
+                   - 1 * self.num_threes_opp \
+                   - 1e4 * self.num_fours_opp

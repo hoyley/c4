@@ -11,6 +11,7 @@ class Node:
         self.col = col
         self.visits = 0
         self.score = 0
+        self.exploration = 2
 
     def is_leaf(self):
         return self.children == []
@@ -18,7 +19,7 @@ class Node:
     def ucb(self):
         if self.visits == 0 or self.parent is None:
             return math.inf
-        return self.score/self.visits + (math.log(self.parent.visits) / self.visits)
+        return self.score/self.visits + self.exploration * ((math.log(self.parent.visits) / self.visits) ** .5)
 
     def probability(self):
         return self.score / self.visits if self.visits != 0 else 0

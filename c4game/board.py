@@ -9,7 +9,7 @@ class Board:
         self.line_length = line_length
         self.board = [0] * self.rows * self.cols
         self.col_counts = [0 for _ in range(self.cols)]
-        self.last_column_played = None
+        self.last_played = []
 
     def play(self, col, player_value):
         if 0 > col >= self.cols:
@@ -24,7 +24,7 @@ class Board:
 
         self.set(self.col_counts[col], col, player_value)
         self.col_counts[col] += 1
-        self.last_column_played = col
+        self.last_played.append(col)
 
     def get(self, row, col):
         return self.board[row * self.cols + col]
@@ -38,11 +38,21 @@ class Board:
     def copy(self):
         return copy.deepcopy(self)
 
+    def undo_move(self):
+        last_played = self.last_played.pop()
+
+        if last_played:
+            self.col_counts[last_played] -= 1
+            self.set(self.col_counts[last_played], last_played, Board.EMPTY_TOKEN)
+
+    def last_column_played(self):
+        return self.last_played[-1] if self.last_played else None
+
     def check_win_from_last_move(self):
-        if not self.last_column_played:
+        if not self.last_column_played():
             return False
 
-        start_col = self.last_column_played
+        start_col = self.last_column_played()
         start_row = self.col_counts[start_col] - 1
         player_val = self.get(start_row, start_col)
 

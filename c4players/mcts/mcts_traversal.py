@@ -35,8 +35,8 @@ class MctsTraversal:
             node.score += score if node.player_id == self.player.player_id else opponent_score
 
     def _update_opponents_move(self, board):
-        if board.last_column_played is not None:
-            matching_nodes = filter(lambda node: node.col == board.last_column_played, self.current_node.children)
+        if board.last_column_played() is not None:
+            matching_nodes = filter(lambda node: node.col == board.last_column_played(), self.current_node.children)
             opponent_node = next(matching_nodes, None)
             if opponent_node is None:
                 opponent_node = Node(self.current_node, self.opponent.player_id, board.last_column_played)

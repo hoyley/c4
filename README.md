@@ -4,11 +4,12 @@ An exploratory project to learn and implement Reinforcement Learning approaches 
 Initial approaches to RL will include Monte Carlo Tree Search (MCTS) and Deep Q-Networks (DQN).
 Other non-RL approaches including Convolutional Neural Networks (CNN) will be considered. 
 
-| Game          | Approach                          | Status        |
-| :---          | :---                              | :---          |
-| Connect 4     | Monte Carlo Tree Search(MTCS)     | Implemented   |
-| Connect 4     | Deep Q-Network (DQN)              | In Progress   |
-
+| Game          | Approach                          | Status        | Command Line Name |  
+| :---          | :---                              | :---          | :---              |
+| Connect 4     | Random                            | Implemented   | random            |
+| Connect 4     | Minimax                           | Implemented   | minimax           |
+| Connect 4     | Monte Carlo Tree Search(MTCS)     | Implemented   | mcts              |
+| Connect 4     | Deep Q-Network (DQN)              | Implemented   | dqn               |
 
 Much of the inspiration for the Connect4 approach comes from [this article](https://codebox.net/pages/connect4). 
 If any articles are used in the making of this project, all intent is to understand and implement concepts,

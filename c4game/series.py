@@ -46,9 +46,10 @@ class Series:
                       self.results[self.player1.player_id],
                       self.results[self.player2.player_id], self.results[0]))
 
-        print('P1 Win %: {:0.3f}% -- P2 Win %: {:0.3f}% -- Tie %: {:0.3f}% -- Time per game: {:0.5f}'.format(
-            self.results[self.player1.player_id] / self.num_games * 100,
-            self.results[self.player2.player_id] / self.num_games * 100,
-            self.results[0] / self.num_games * 100,
-            self.total_time / self.num_games
-        ))
+        if self.num_games > 0:
+            print('P1 Win %: {:0.3f}% -- P2 Win %: {:0.3f}% -- Tie %: {:0.3f}% -- Time per game: {:0.5f}'.format(
+                self.results[self.player1.player_id] / self.num_games * 100,
+                self.results[self.player2.player_id] / self.num_games * 100,
+                self.results[0] / self.num_games * 100,
+                self.total_time / self.num_games
+            ))

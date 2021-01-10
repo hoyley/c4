@@ -1,12 +1,12 @@
 from collections import deque
 
 import math
+import time
 import numpy as np
 import os
 import random
-from keras.layers import Dense
+from keras.layers import Dense, Flatten
 from keras.models import Sequential
-
 from c4game.player import Player
 
 
@@ -25,13 +25,19 @@ class DqnPlayer(Player):
         self.epsilon_min = 0.01
         self.learning_rate = 0.001
         self.tau = .125
-        self.model = self._build_model()
-        self.target_model = self._build_model()
+        self.loss_func = "mse"
+        self.optimizer = "adam"
+        self.layers = [20, 50]
+        self.model = None
+        self.target_model = None
         self.previous_action = None
         self.previous_state = None
 
     def move(self, game):
+        self._initialize(game.board.cols)
         state, available_moves = self._observe(game)
+
+        # This is actually our "current action" but it will be stored as "previous action" for the next move
         self.previous_action = self._act(state, available_moves)
         self.previous_state = state
 
@@ -41,7 +47,7 @@ class DqnPlayer(Player):
         self._observe(game)
 
     def _observe(self, game):
-        current_state = [item for sublist in game.board.board for item in sublist]
+        current_state = game.board.board
         available_moves = game.board.get_valid_moves()
 
         if self.previous_state:
@@ -99,13 +105,18 @@ class DqnPlayer(Player):
         self.epsilon = max(self.epsilon_min, self.epsilon)
         return self.epsilon
 
-    @staticmethod
-    def _build_model():
-        # Model not thought through. Just putting in something that works at this point.
-        model = Sequential()
-        model.add(Dense(24, input_dim=1, activation='relu'))
-        model.add(Dense(24, activation='relu'))
-        model.add(Dense(7))
-        model.compile(loss='logcosh', optimizer='rmsprop', metrics=['accuracy'])
+    def _initialize(self, num_cols):
+        if not self.model:
+            self.model = self._build_model(self.loss_func, self.optimizer, self.layers)
+            self.target_model = self._build_model(self.loss_func, self.optimizer, self.layers)
+            print(self.model.summary())
 
+    @staticmethod
+    def _build_model(loss_func, optimizer, layers):
+        model = Sequential()
+        for size in layers:
+            model.add(Dense(size, input_dim=1, activation='relu'))
+
+        model.add(Dense(7))
+        model.compile(loss=loss_func, optimizer=optimizer)
         return model

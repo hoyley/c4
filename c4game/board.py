@@ -1,3 +1,5 @@
+import copy
+
 class Board:
     PLAYER_1_TOKEN, PLAYER_2_TOKEN, EMPTY_TOKEN = 1, -1, 0
 
@@ -5,7 +7,7 @@ class Board:
         self.rows = rows
         self.cols = cols
         self.line_length = line_length
-        self.board = [[Board.EMPTY_TOKEN for _ in range(self.cols)] for _ in range(self.rows)]
+        self.board = [0] * self.rows * self.cols
         self.col_counts = [0 for _ in range(self.cols)]
         self.last_column_played = None
 
@@ -20,17 +22,29 @@ class Board:
         if self.col_counts[col] >= self.rows:
             raise ValueError('Column {} is already full.'.format(col))
 
-        self.board[self.col_counts[col]][col] = player_value
+        self.set(self.col_counts[col], col, player_value)
         self.col_counts[col] += 1
         self.last_column_played = col
+
+    def get(self, row, col):
+        return self.board[row * self.cols + col]
+
+    def set(self, row, col, value):
+        self.board[row * self.cols + col] = value
 
     def get_valid_moves(self):
         return [c for c, count in enumerate(self.col_counts) if count < self.rows]
 
+    def copy(self):
+        return copy.deepcopy(self)
+
     def check_win_from_last_move(self):
+        if not self.last_column_played:
+            return False
+
         start_col = self.last_column_played
         start_row = self.col_counts[start_col] - 1
-        player_val = self.board[start_row][start_col]
+        player_val = self.get(start_row, start_col)
 
         for c in range(-1, 1):
             for r in range(-1, 1):
@@ -39,8 +53,8 @@ class Board:
                     return True
 
     def print(self):
-        print('\n'.join([''.join(['{:4}'.format(item) for item in row])
-                         for row in reversed(self.board)]))
+        print('\n'.join([''.join(['{:4}'.format(self.get(row, col)) for col in range(self.cols)])
+                         for row in reversed(range(self.rows))]))
 
     def _check_win_in_direction(self, player_val, from_location, direction, remaining):
         if remaining == 0:
@@ -49,5 +63,5 @@ class Board:
         new_row = from_location[0] + direction[0]
         new_col = from_location[1] + direction[1]
 
-        return 0 <= new_col < self.cols and 0 <= new_row < self.rows and self.board[new_row][new_col] == player_val \
+        return 0 <= new_col < self.cols and 0 <= new_row < self.rows and self.get(new_row, new_col) == player_val \
             and self._check_win_in_direction(player_val, [new_row, new_col], direction, remaining - 1)

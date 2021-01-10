@@ -8,8 +8,8 @@ class TestC4(unittest.TestCase):
 
     def test_player1_win(self):
         board = Board(4, 4, 3)
-        player1 = TestPlayer([0, 0, 0, 0], -1)
-        player2 = TestPlayer([1, 1, 1], 1)
+        player1 = TestPlayer([0, 0, 0], -1)
+        player2 = TestPlayer([1, 1], 1)
         game = Game(board, player1, player2, False)
 
         game.start_game()

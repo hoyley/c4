@@ -18,6 +18,7 @@ class Minimax:
         self.opponent_id = game.get_opponent(game.current_player).player_id
         self.starting_board = game.board.copy() if Minimax.COPY_BOARD else game.board
         self.num_steps_lookahead = num_steps_lookahead
+        self.heuristic = WindowHeuristic(self.player_id, self.opponent_id)
 
     def get_move(self):
         allowed_moves = self.starting_board.get_valid_moves()
@@ -26,7 +27,7 @@ class Minimax:
         max_score = -np.inf
         for allowed_move in allowed_moves:
             board_after_move = Minimax.drop_piece(self.starting_board, allowed_move, self.player_id)
-            minimax_score = self.minimax(board_after_move, self.num_steps_lookahead - 1, False)
+            minimax_score = self.minimax(board_after_move, self.num_steps_lookahead - 1, False, -np.Inf, np.Inf)
             move_score_dict[allowed_move] = minimax_score
             max_score = minimax_score if minimax_score > max_score else max_score
             Minimax.clean_up_move(board_after_move)
@@ -35,29 +36,37 @@ class Minimax:
 
         return random.choice(moves_with_max_score)
 
-    def minimax(self, board, depth, maximizing_player):
+    def minimax(self, board, depth, maximizing_player, alpha, beta):
         available_moves = board.get_valid_moves()
 
         if depth == 0 or not available_moves or board.check_win_from_last_move():
-            return self.get_heuristic(board)
+            return self.get_score(board)
 
         if maximizing_player:
             max_eval = -np.Inf
             for col in available_moves:
                 board_after_move = Minimax.drop_piece(board, col, self.player_id)
-                max_eval = max(max_eval, self.minimax(board_after_move, depth - 1, False))
+                max_eval = max(max_eval, self.minimax(board_after_move, depth - 1, False, alpha, beta))
                 Minimax.clean_up_move(board_after_move)
+
+                alpha = max(alpha, max_eval)
+                if alpha > beta:
+                    break
             return max_eval
         else:
             min_eval = np.Inf
             for col in available_moves:
                 board_after_move = Minimax.drop_piece(board, col, self.opponent_id)
-                min_eval = min(min_eval, self.minimax(board_after_move, depth - 1, True))
+                min_eval = min(min_eval, self.minimax(board_after_move, depth - 1, True, alpha, beta))
                 Minimax.clean_up_move(board_after_move)
+
+                beta = min(beta, min_eval)
+                if beta <= alpha:
+                    break
             return min_eval
 
-    def get_heuristic(self, board):
-        return WindowHeuristic(self.player_id, self.opponent_id).score_board(board)
+    def get_score(self, board):
+        return self.heuristic.score_board(board)
 
     @staticmethod
     def is_terminal_node(board):

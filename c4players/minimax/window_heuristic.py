@@ -17,33 +17,36 @@ class WindowHeuristic:
         # Count in horizontal orientation
         for row in range(board.rows):
             for col in range(board.cols - (board.line_length - 1)):
-                self.count_window_contents(board, [row, col], WindowHeuristic.EAST, window_counts)
+                self.count_window_contents(board, row, col, WindowHeuristic.EAST, window_counts)
         # Count in vertical orientation
         for row in range(board.rows - (board.line_length - 1)):
             for col in range(board.cols):
-                self.count_window_contents(board, [row, col], WindowHeuristic.NORTH, window_counts)
+                self.count_window_contents(board, row, col, WindowHeuristic.NORTH, window_counts)
         # Count in positive diagonal
         for row in range(board.rows - (board.line_length - 1)):
             for col in range(board.cols - (board.line_length - 1)):
-                self.count_window_contents(board, [row, col], WindowHeuristic.NORTH_EAST, window_counts)
+                self.count_window_contents(board, row, col, WindowHeuristic.NORTH_EAST, window_counts)
         # Count in negative diagonal
         for row in range(board.line_length - 1, board.rows):
             for col in range(board.cols - (board.line_length - 1)):
-                self.count_window_contents(board, [row, col], WindowHeuristic.SOUTH_EAST, window_counts)
+                self.count_window_contents(board, row, col, WindowHeuristic.SOUTH_EAST, window_counts)
 
         return window_counts.get_score()
 
-    def count_window_contents(self, board, start_location, direction, window_counts):
+    def count_window_contents(self, board, start_row, start_col, direction, window_counts):
         num_player = 0
         num_opponent = 0
         num_empty = 0
-        cur_location = start_location
+        cur_row = start_row
+        cur_col = start_col
+        direction_row = direction[0]
+        direction_col = direction[1]
 
         for _ in range(board.line_length):
-            if not (0 <= cur_location[0] < board.rows and 0 <= cur_location[1] < board.cols):
+            if not (0 <= cur_row < board.rows and 0 <= cur_col < board.cols):
                 break
 
-            val = board.get(cur_location[0], cur_location[1])
+            val = board.get(cur_row, cur_col)
             if val == self.player_id:
                 num_player += 1
             elif val == self.opponent_id:
@@ -51,7 +54,8 @@ class WindowHeuristic:
             else:
                 num_empty += 1
 
-            cur_location = [cur_location[0] + direction[0], cur_location[1] + direction[1]]
+            cur_row = cur_row + direction_row
+            cur_col = cur_col + direction_col
 
         if num_player >= 3:
             window_counts.num_threes += 1

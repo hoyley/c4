@@ -1,4 +1,6 @@
 class Game:
+    __slots__ = 'board', 'player1', 'player2', 'current_player', 'winner', 'game_over', 'is_training'
+
     def __init__(self, board, player1, player2, is_training):
         self.board = board
         self.player1 = player1

@@ -50,10 +50,12 @@ class Board:
         return self.last_played[-1] if self.last_played else None
 
     def check_win_from_last_move(self):
-        if not self.last_column_played():
+        last_played = self.last_column_played()
+
+        if not last_played:
             return False
 
-        start_col = self.last_column_played()
+        start_col = last_played
         start_row = self.col_counts[start_col] - 1
         player_val = self.get(start_row, start_col)
 

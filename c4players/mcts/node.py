@@ -13,6 +13,11 @@ class Node:
         self.score = 0
         self.exploration = 2
 
+    def add_child(self, player_id, move):
+        child = Node(self, player_id, move)
+        self.children.append(child)
+        return child
+
     def is_leaf(self):
         return self.children == []
 
@@ -33,6 +38,18 @@ class Node:
         if not self.is_leaf():
             max_children = util.max_list(self.children, key_func=lambda child: child.probability())
             return random.choice(max_children)
+
+    def update_score(self, score, opponent_score):
+        # This method would be cleaner as a recursive method, but should perform better this way
+        current_node = self
+
+        while current_node:
+            current_node.visits += 1
+            if current_node.player_id == self.player_id:
+                current_node.score += score
+            else:
+                current_node.score += opponent_score
+            current_node = current_node.parent
 
     @staticmethod
     def create_root():

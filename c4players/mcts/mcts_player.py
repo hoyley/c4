@@ -14,9 +14,8 @@ class MctsPlayer(Player):
         return self.current_traversal.move(game.board)
 
     def game_over(self, game):
-        self.current_traversal.end_game(game.winner)
+        self.current_traversal.end_game(game)
         self.current_traversal = None
-        pass
 
     def _initialize(self, game):
         if self.current_traversal is None:

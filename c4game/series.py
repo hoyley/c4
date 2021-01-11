@@ -22,37 +22,17 @@ class Series:
 
     def play(self):
         for game_num in range(self.num_games):
-            board = self.board_factory.create()
-            game = Game(board, self.player1, self.player2, self.is_training)
-            game.start_game()
-            winner = game.winner.player_id if game.winner else 0
-            self.results[winner] += 1
-            self.games_played += 1
-
-            if game_num % self.print_buffer == self.print_buffer - 1:
-                self.print_result()
+            game = self._start_game()
+            self._game_over(game)
 
         self.total_time = time.time() - self.start_time
-
-    def print_result(self):
-        total_time = time.time() - self.start_time
-        p1_wins = self.results[self.player1.player_id]
-        p2_wins = self.results[self.player2.player_id]
-        ties = self.results[Board.EMPTY_TOKEN]
-
-        print('Time: {:0.4f} -- Games Played: {}/{} -- P1 Wins: {} -- P2 Wins: {} -- Ties: {} -- Avg Time: {:04f} '
-              '-- P1% {:0.2f} -- P2% {:0.2f} -- Tie% {:0.2f}'
-              .format(total_time, self.games_played, self.num_games, p1_wins, p2_wins, ties,
-                      total_time / self.games_played,
-                      p1_wins / self.games_played * 100,
-                      p2_wins / self.games_played * 100,
-                      ties / self.games_played * 100))
 
     def print_results(self):
         print()
         print('--- Summary ---')
 
-        self.print_result()
+        if self.games_played:
+            print(self._format_result())
 
         if self.num_games > 0:
             print('P1 Win %: {:0.3f}% -- P2 Win %: {:0.3f}% -- Tie %: {:0.3f}% -- Time per game: {:0.5f}'.format(
@@ -61,3 +41,32 @@ class Series:
                 self.results[0] / self.num_games * 100,
                 self.total_time / self.num_games
             ))
+
+    def _start_game(self):
+        board = self.board_factory.create()
+        game = Game(board, self.player1, self.player2, self.is_training)
+        game.start_game()
+        return game
+
+    def _game_over(self, game):
+        winner = game.winner.player_id if game.winner else 0
+        self.results[winner] += 1
+        self.games_played += 1
+
+        if self.games_played % self.print_buffer == 0:
+            print(self._format_result())
+
+    def _format_result(self):
+        total_time = time.time() - self.start_time
+        p1_wins = self.results[self.player1.player_id]
+        p2_wins = self.results[self.player2.player_id]
+        ties = self.results[Board.EMPTY_TOKEN]
+
+        return 'Time: {:0.4f} -- Games Played: {}/{} -- P1 Wins: {} -- P2 Wins: {} -- Ties: {} -- Avg Time: {:04f} ' \
+               '-- P1% {:0.2f} -- P2% {:0.2f} -- Tie% {:0.2f}'\
+               .format(total_time, self.games_played, self.num_games, p1_wins, p2_wins, ties,
+                       total_time / self.games_played,
+                       p1_wins / self.games_played * 100,
+                       p2_wins / self.games_played * 100,
+                       ties / self.games_played * 100)
+

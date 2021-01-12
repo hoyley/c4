@@ -5,15 +5,15 @@ from c4players.minimax.minimax_player import MinimaxPlayer
 
 class PlayerFactory:
     @staticmethod
-    def create(strategy_name, args=None):
+    def create(strategy_name, player_id, config=None):
         if strategy_name == 'random':
-            return RandomPlayer(**args)
+            return RandomPlayer(player_id, config)
         elif strategy_name == 'mcts':
-            return MctsPlayer(**args)
+            return MctsPlayer(player_id, config)
         elif strategy_name == 'dqn':
             from c4players.dqn.dqn_player import DqnPlayer
-            return DqnPlayer(**args)
+            return DqnPlayer(player_id, config)
         elif strategy_name == 'minimax':
-            return MinimaxPlayer(**args)
+            return MinimaxPlayer(player_id, config)
         else:
             raise ValueError('No player strategy named [{}] available.', strategy_name)

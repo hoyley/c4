@@ -2,6 +2,7 @@ from c4players.player_factory import PlayerFactory
 from c4game.series import Series
 from c4game.board_factory import BoardFactory
 import sys
+import math
 
 
 def read_command(argv):
@@ -15,10 +16,12 @@ def read_command(argv):
     parser.add_option('-n', '--numGames', dest='num_games', type='int', default=50)
     parser.add_option('-r', '--numRows', dest='num_rows', type='int', default=6)
     parser.add_option('-c', '--numCols', dest='num_cols', type='int', default=7)
-    parser.add_option('-l', '--lineLength', dest='line_length', type='int', default=4)
+    parser.add_option('-x', '--lineLength', dest='line_length', type='int', default=4)
     parser.add_option('-p', '--printBuffer', dest='print_buffer', type='int', default=1000)
     parser.add_option('-a', '--p1strategy', dest='p1_strategy', type='string', default='<NOT_SPECIFIED>')
     parser.add_option('-b', '--p2strategy', dest='p2_strategy', type='string', default='<NOT_SPECIFIED>')
+    parser.add_option('-s', '--store_model_freq', dest='store_model_freq', type='int', default=math.inf)
+    parser.add_option("-l", action="store_true", dest="load_models")
 
     options, other_junk = parser.parse_args(argv)
 
@@ -34,12 +37,16 @@ def read_command(argv):
     args['print_buffer'] = options.print_buffer
 
     try:
-        args['player1'] = PlayerFactory.create(options.p1_strategy, {'player_id': -1})
+        args['player1'] = PlayerFactory.create(options.p1_strategy, player_id=-1,
+                                               config={'load_model': options.load_models,
+                                                       'store_freq': options.store_model_freq})
     except ValueError as ex:
         raise ValueError('Player 1 strategy is invalid: {}'.format(options.p1_strategy)) from ex
 
     try:
-        args['player2'] = PlayerFactory.create(options.p2_strategy, {'player_id': 1})
+        args['player2'] = PlayerFactory.create(options.p2_strategy, player_id=1,
+                                               config={'load_model': options.load_models,
+                                                       'store_freq': options.store_model_freq})
     except ValueError as ex:
         raise ValueError('Player 2 strategy is invalid: {}'.format(options.p2_strategy)) from ex
 

@@ -3,7 +3,7 @@ from c4players.minimax.minimax import Minimax
 
 
 class MinimaxPlayer(Player):
-    def __init__(self, player_id):
+    def __init__(self, player_id, _config):
         super().__init__(player_id)
 
     def move(self, game):

@@ -64,5 +64,5 @@ class Series:
                        self.games_played, self.num_games,
                        p1_wins, p1_wins / self.games_played * 100,
                        p2_wins, p2_wins / self.games_played * 100,
-                       ties, ties / self.games_played * 10, total_time / self.games_played)
+                       ties, ties / self.games_played * 100, total_time / self.games_played)
 

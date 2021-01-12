@@ -6,12 +6,15 @@ import os
 import random
 from keras.layers import Dense
 from keras.models import Sequential
+from keras.callbacks import ModelCheckpoint
 from c4game.player import Player
 
 
 class DqnPlayer(Player):
+    checkpoint_path_model = "checkpoints/dqn.ckpt"
+    checkpoint_path_target_model = "checkpoints/dqn_target.ckpt"
 
-    def __init__(self, player_id):
+    def __init__(self, player_id, config):
         super().__init__(player_id)
 
         # Hack: https://github.com/dmlc/xgboost/issues/1715
@@ -26,11 +29,17 @@ class DqnPlayer(Player):
         self.tau = .125
         self.loss_func = "mse"
         self.optimizer = "adam"
-        self.layers = [20, 50]
+        self.layers = [100, 200, 200, 100]
         self.model = None
         self.target_model = None
         self.previous_action = None
         self.previous_state = None
+        self.load_model = config["load_model"] if config else False
+        self.save_frequency = config["store_freq"] if config and config["store_freq"] else math.inf
+        self.games_played = 0
+
+        if not os.path.exists(os.path.dirname(DqnPlayer.checkpoint_path_model)):
+            os.makedirs(os.path.dirname(DqnPlayer.checkpoint_path_model))
 
     def move(self, game):
         self._initialize(game.board.cols)
@@ -45,12 +54,16 @@ class DqnPlayer(Player):
     def game_over(self, game):
         self._observe(game)
 
+        self.games_played += 1
+        if self.games_played % self.save_frequency == 0:
+            self._save_weights()
+
     def _observe(self, game):
         current_state = game.board.board
         available_moves = game.board.get_valid_moves()
 
         if self.previous_state:
-            reward = 1 if game.winner is not None and game.winner == self.player_id \
+            reward = 1 if game.winner is not None and game.winner.player_id == self.player_id \
                 else -1 if game.winner is not None \
                 else 0
 
@@ -90,6 +103,7 @@ class DqnPlayer(Player):
             else:
                 q_future = max(self.target_model.predict(new_state)[0])
                 target[0][action] = reward + q_future * self.gamma
+
             self.model.fit(state, target, epochs=1, verbose=0)
 
     def _target_train(self):
@@ -108,14 +122,28 @@ class DqnPlayer(Player):
         if not self.model:
             self.model = self._build_model(self.loss_func, self.optimizer, self.layers)
             self.target_model = self._build_model(self.loss_func, self.optimizer, self.layers)
+
+            if self.load_model:
+                self._load_weights()
+
             print(self.model.summary())
+
+    def _save_weights(self):
+        print("Persisting DQN models to disk.")
+        self.model.save_weights(DqnPlayer.checkpoint_path_model, overwrite=True)
+        self.target_model.save_weights(DqnPlayer.checkpoint_path_target_model)
+
+    def _load_weights(self):
+        print("Loading DQN models from disk.")
+        self.model.load_weights(DqnPlayer.checkpoint_path_model)
+        self.target_model.load_weights(DqnPlayer.checkpoint_path_target_model)
 
     @staticmethod
     def _build_model(loss_func, optimizer, layers):
         model = Sequential()
         for size in layers:
-            model.add(Dense(size, input_dim=1, activation='relu'))
+            model.add(Dense(size, input_dim=1, activation='relu', kernel_initializer='he_normal'))
 
-        model.add(Dense(7))
+        model.add(Dense(7, activation='tanh', kernel_initializer='RandomNormal'))
         model.compile(loss=loss_func, optimizer=optimizer)
         return model

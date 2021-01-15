@@ -14,7 +14,7 @@ class SplitPlayer(Player):
         else:
             return self.player.move(game)
 
-    def game_over(self, game):
+    def _on_game_over(self, game):
         if game.is_training:
             return self.trainer.game_over(game)
         else:

@@ -10,7 +10,7 @@ class PlayerFactory:
         if strategy_name == 'random':
             return RandomPlayer(player_id)
         elif strategy_name == 'mcts':
-            return MctsPlayer(player_id)
+            return MctsPlayer(player_id, config)
         elif strategy_name == 'dqn':
             from c4players.dqn.dqn_player import DqnPlayer
             return DqnPlayer(player_id, config)

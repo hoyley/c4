@@ -15,7 +15,7 @@ class HumanPlayer(Player):
 
         return HumanPlayer.get_input(game.board)
 
-    def game_over(self, game):
+    def _on_game_over(self, game):
         print()
         print(" ----------------------------------------------------------------- ")
         if game.winner is None:

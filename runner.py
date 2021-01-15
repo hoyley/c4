@@ -41,6 +41,7 @@ def read_command(argv):
                                                config={'load_model': options.load_models,
                                                        'store_freq': options.store_model_freq})
     except ValueError as ex:
+        print(ex)
         raise ValueError('Player 1 strategy is invalid: {}'.format(options.p1_strategy)) from ex
 
     try:
@@ -48,6 +49,7 @@ def read_command(argv):
                                                config={'load_model': options.load_models,
                                                        'store_freq': options.store_model_freq})
     except ValueError as ex:
+        print(ex)
         raise ValueError('Player 2 strategy is invalid: {}'.format(options.p2_strategy)) from ex
 
     return args

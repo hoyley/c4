@@ -30,10 +30,9 @@ class Series:
         self.total_time = time.time() - self.start_time
 
     def print_results(self):
-        print()
-        print('--- Summary ---')
-
         if self.games_played:
+            print()
+            print('--- Summary ---')
             print(self._format_result())
 
     def _start_game(self):

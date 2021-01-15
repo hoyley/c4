@@ -7,5 +7,3 @@ class RandomPlayer(Player):
     def move(self, game):
         return random.choice(game.board.get_valid_moves())
 
-    def game_over(self, game):
-        pass

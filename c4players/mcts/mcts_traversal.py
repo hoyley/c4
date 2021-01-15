@@ -1,8 +1,3 @@
-from c4game.player import Player
-from c4players.mcts.node import Node
-import math
-
-
 class MctsTraversal:
 
     def __init__(self, root, player, opponent, is_training):

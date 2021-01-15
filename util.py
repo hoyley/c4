@@ -1,5 +1,5 @@
 import math
-
+import os
 
 def max_list(source_list, key_func):
     results = []
@@ -13,3 +13,8 @@ def max_list(source_list, key_func):
             results.append(item)
 
     return results
+
+
+def create_path(path):
+    if not os.path.exists(os.path.dirname(path)):
+        os.makedirs(os.path.dirname(path))

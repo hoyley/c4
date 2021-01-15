@@ -8,6 +8,3 @@ class MinimaxPlayer(Player):
 
     def move(self, game):
         return Minimax(game, 3).get_move()
-
-    def game_over(self, game):
-        pass

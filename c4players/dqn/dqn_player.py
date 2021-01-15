@@ -4,6 +4,7 @@ import math
 import numpy as np
 import os
 import random
+import util
 from keras.layers import Dense
 from keras.models import Sequential
 from c4game.player import Player
@@ -33,12 +34,9 @@ class DqnPlayer(Player):
         self.target_model = None
         self.previous_action = None
         self.previous_state = None
-        self.load_model = config["load_model"] if config else False
-        self.save_frequency = config["store_freq"] if config and config["store_freq"] else math.inf
-        self.games_played = 0
 
-        if not os.path.exists(os.path.dirname(DqnPlayer.checkpoint_path_model)):
-            os.makedirs(os.path.dirname(DqnPlayer.checkpoint_path_model))
+        util.create_path(DqnPlayer.checkpoint_path_model)
+        util.create_path(DqnPlayer.checkpoint_path_target_model)
 
     def move(self, game):
         self._initialize(game.board.cols)
@@ -50,12 +48,18 @@ class DqnPlayer(Player):
 
         return self.previous_action
 
-    def game_over(self, game):
+    def _on_game_over(self, game):
         self._observe(game)
 
-        self.games_played += 1
-        if self.games_played % self.save_frequency == 0:
-            self._save_weights()
+    def save_state(self):
+        self.model.save_weights(DqnPlayer.checkpoint_path_model, overwrite=True)
+        self.target_model.save_weights(DqnPlayer.checkpoint_path_target_model)
+        print("Saved DQN models to disk.")
+
+    def load_state(self):
+        self.model.load_weights(DqnPlayer.checkpoint_path_model)
+        self.target_model.load_weights(DqnPlayer.checkpoint_path_target_model)
+        print("Loaded DQN models from disk.")
 
     def _observe(self, game):
         current_state = game.board.board
@@ -123,19 +127,9 @@ class DqnPlayer(Player):
             self.target_model = self._build_model(self.loss_func, self.optimizer, self.layers)
 
             if self.load_model:
-                self._load_weights()
+                self.load_state()
 
             print(self.model.summary())
-
-    def _save_weights(self):
-        print("Persisting DQN models to disk.")
-        self.model.save_weights(DqnPlayer.checkpoint_path_model, overwrite=True)
-        self.target_model.save_weights(DqnPlayer.checkpoint_path_target_model)
-
-    def _load_weights(self):
-        print("Loading DQN models from disk.")
-        self.model.load_weights(DqnPlayer.checkpoint_path_model)
-        self.target_model.load_weights(DqnPlayer.checkpoint_path_target_model)
 
     @staticmethod
     def _build_model(loss_func, optimizer, layers):

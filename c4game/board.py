@@ -79,20 +79,20 @@ class Board:
         new_board.print()
 
     def _count_vertical(self, player_val, from_location):
-        return 1 + self._count_in_direction(player_val, from_location, [1,0]) \
-               + self._count_in_direction(player_val, from_location, [-1,0])
+        return 1 + self._count_in_direction(player_val, from_location, [1, 0]) \
+               + self._count_in_direction(player_val, from_location, [-1, 0])
 
     def _count_horizontal(self, player_val, from_location):
-        return 1 + self._count_in_direction(player_val, from_location, [0,1]) \
-               + self._count_in_direction(player_val, from_location, [0,-1])
+        return 1 + self._count_in_direction(player_val, from_location, [0, 1]) \
+               + self._count_in_direction(player_val, from_location, [0, -1])
 
     def _count_positive_diagonal(self, player_val, from_location):
         return 1 + self._count_in_direction(player_val, from_location, [1, 1]) \
-               + self._count_in_direction(player_val, from_location, [-1,-1])
+               + self._count_in_direction(player_val, from_location, [-1, -1])
 
     def _count_negative_horizontal(self, player_val, from_location):
         return 1 + self._count_in_direction(player_val, from_location, [1, -1]) \
-               + self._count_in_direction(player_val, from_location, [-1,1])
+               + self._count_in_direction(player_val, from_location, [-1, 1])
 
     def _count_in_direction(self, player_val, from_location, direction):
         new_row = from_location[0] + direction[0]

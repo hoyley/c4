@@ -34,7 +34,7 @@ class MctsPlayer(Player):
     def load_state(self):
         if os.path.exists(MctsPlayer.SAVE_PATH):
             with open(MctsPlayer.SAVE_PATH, "rb") as f:
-                load(f)
+                self.root = load(f)
             print("MCTS model loaded from disk.")
 
     def _initialize(self, game):

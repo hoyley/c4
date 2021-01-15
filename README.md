@@ -4,12 +4,13 @@ An exploratory project to learn and implement Reinforcement Learning approaches 
 Initial approaches to RL will include Monte Carlo Tree Search (MCTS) and Deep Q-Networks (DQN).
 Other non-RL approaches including Convolutional Neural Networks (CNN) will be considered. 
 
-| Game          | Approach                          | Status        | Command Line Name |  
+| Game          | Player                            | Status        | Command Line Name |  
 | :---          | :---                              | :---          | :---              |
+| Connect 4     | Human                             | Implemented   | human             |
 | Connect 4     | Random                            | Implemented   | random            |
 | Connect 4     | Minimax                           | Implemented   | minimax           |
 | Connect 4     | Monte Carlo Tree Search(MTCS)     | Implemented   | mcts              |
-| Connect 4     | Deep Q-Network (DQN)              | Implemented   | dqn               |
+| Connect 4     | Deep Q-Network (DQN)              | In Progress   | dqn               |
 
 Much of the inspiration for the Connect4 approach comes from [this article](https://codebox.net/pages/connect4). 
 If any articles are used in the making of this project, all intent is to understand and implement concepts,
@@ -42,6 +43,9 @@ python3 runner.py --p1strategy random --p2strategy mcts --numTraining 500000 --n
 ```
 This command will run 500,000 training simulations with player 1 using random strategy and player 2 using MCTS. 
 Following training, 1,000 simulations will be run.
+
+It is possible to use a different player for training than for execution. Specifying a player named `minimax,human` will
+train using minimax and execute using human input.
 
 Use `python3 runner.py --help` for more detailed instructions. Todo: Implement more detailed instructions :)
 

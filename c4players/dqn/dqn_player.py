@@ -43,13 +43,15 @@ class DqnPlayer(Player):
         state, available_moves = self._observe(game)
 
         # This is actually our "current action" but it will be stored as "previous action" for the next move
-        self.previous_action = self._act(state, available_moves)
+        self.previous_action = self._act(state, available_moves, game.is_training)
         self.previous_state = state
 
         return self.previous_action
 
     def _on_game_over(self, game):
         self._observe(game)
+        self.previous_state = None
+        self.previous_action = None
 
     def save_state(self):
         self.model.save_weights(DqnPlayer.checkpoint_path_model, overwrite=True)
@@ -62,10 +64,10 @@ class DqnPlayer(Player):
         print("Loaded DQN models from disk.")
 
     def _observe(self, game):
-        current_state = game.board.board
+        current_state = game.board.board.copy()
         available_moves = game.board.get_valid_moves()
 
-        if self.previous_state:
+        if self.previous_state and game.is_training:
             reward = 1 if game.winner is not None and game.winner.player_id == self.player_id \
                 else -1 if game.winner is not None \
                 else 0
@@ -78,9 +80,9 @@ class DqnPlayer(Player):
 
         return current_state, available_moves
 
-    def _act(self, state, available_moves):
+    def _act(self, state, available_moves, is_training):
 
-        if np.random.random() < self._decay_epsilon():
+        if np.random.random() < self._decay_epsilon() and not is_training:
             return random.choice(available_moves)
 
         prediction = self.model.predict(state)[0]

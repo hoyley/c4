@@ -1,6 +1,7 @@
 import math
 import os
 
+
 def max_list(source_list, key_func):
     results = []
     largest = -math.inf

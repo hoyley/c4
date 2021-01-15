@@ -9,6 +9,7 @@ class Minimax:
     # Array copies can be expensive when done excessively, so performance is improved if disabled.
     # If there is any threading, this should be True.
     COPY_BOARD = False
+    ALPHA_BETA = True
 
     def __init__(self, game, num_steps_lookahead):
         self.rows = game.board.rows
@@ -50,7 +51,7 @@ class Minimax:
                 Minimax.clean_up_move(board_after_move)
 
                 alpha = max(alpha, max_eval)
-                if alpha > beta:
+                if Minimax.ALPHA_BETA and alpha > beta:
                     break
             return max_eval
         else:
@@ -61,7 +62,7 @@ class Minimax:
                 Minimax.clean_up_move(board_after_move)
 
                 beta = min(beta, min_eval)
-                if beta <= alpha:
+                if Minimax.ALPHA_BETA and beta <= alpha:
                     break
             return min_eval
 

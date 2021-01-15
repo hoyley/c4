@@ -6,7 +6,6 @@ import os
 import random
 from keras.layers import Dense
 from keras.models import Sequential
-from keras.callbacks import ModelCheckpoint
 from c4game.player import Player
 
 
@@ -15,7 +14,7 @@ class DqnPlayer(Player):
     checkpoint_path_target_model = "checkpoints/dqn_target.ckpt"
 
     def __init__(self, player_id, config):
-        super().__init__(player_id)
+        super().__init__(player_id, config)
 
         # Hack: https://github.com/dmlc/xgboost/issues/1715
         os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'

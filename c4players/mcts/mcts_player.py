@@ -4,7 +4,7 @@ from c4players.mcts.mcts_traversal import MctsTraversal
 
 class MctsPlayer(Player):
 
-    def __init__(self, player_id, _config):
+    def __init__(self, player_id):
         super().__init__(player_id)
         self.root = Node.create_root()
         self.current_traversal = None

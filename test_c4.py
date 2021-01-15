@@ -24,6 +24,33 @@ class TestC4(unittest.TestCase):
         game.start_game()
         self.assertEqual(None, game.winner)
 
+    def test_undo_move(self):
+        board = Board(4, 4, 4)
+        player1 = TestPlayer([0, 0, 0, 0], -1)
+        player2 = TestPlayer([1, 1, 1], 1)
+        game = Game(board, player1, player2, False)
+        game.start_game()
+
+        self.assertEqual(4, board.col_counts[0])
+        self.assertEqual(3, board.col_counts[1])
+        self.assertEqual(0, board.last_column_played())
+        board.undo_move()
+        self.assertEqual(3, board.col_counts[0])
+        self.assertEqual(3, board.col_counts[1])
+        self.assertEqual(1, board.last_column_played())
+        board.undo_move()
+        self.assertEqual(3, board.col_counts[0])
+        self.assertEqual(2, board.col_counts[1])
+        self.assertEqual(0, board.last_column_played())
+        board.undo_move()
+        self.assertEqual(2, board.col_counts[0])
+        self.assertEqual(2, board.col_counts[1])
+        self.assertEqual(1, board.last_column_played())
+        board.undo_move()
+        self.assertEqual(2, board.col_counts[0])
+        self.assertEqual(1, board.col_counts[1])
+        self.assertEqual(0, board.last_column_played())
+
 
 class TestPlayer(Player):
     def __init__(self, moves, player_id):

@@ -9,7 +9,7 @@ class Board:
         self.cols = cols
         self.line_length = line_length
         self.board = [0] * self.rows * self.cols
-        self.col_counts = [0 for _ in range(self.cols)]
+        self.col_counts = [0] * self.cols
         self.last_played = []
 
     def play(self, col, player_value):
@@ -42,7 +42,7 @@ class Board:
     def undo_move(self):
         last_played = self.last_played.pop()
 
-        if last_played:
+        if last_played is not None:
             self.col_counts[last_played] -= 1
             self.set(self.col_counts[last_played], last_played, Board.EMPTY_TOKEN)
 
@@ -52,29 +52,57 @@ class Board:
     def check_win_from_last_move(self):
         last_played = self.last_column_played()
 
-        if not last_played:
-            return False
-
         start_col = last_played
         start_row = self.col_counts[start_col] - 1
         player_val = self.get(start_row, start_col)
+        start_location = [start_row, start_col]
 
-        for c in range(-1, 1):
-            for r in range(-1, 1):
-                if [c, r] != [0, 0] and \
-                        self._check_win_in_direction(player_val, [start_row, start_col], [r, c], self.line_length - 1):
-                    return True
+        return self._count_vertical(player_val, start_location) >= self.line_length or \
+            self._count_horizontal(player_val, start_location) >= self.line_length or \
+            self._count_positive_diagonal(player_val, start_location) >= self.line_length or \
+            self._count_negative_horizontal(player_val, start_location) >= self.line_length
+
 
     def print(self):
-        print('\n'.join([''.join(['{:4}'.format(self.get(row, col)) for col in range(self.cols)])
+        print('\n'.join([''.join(['{:>4}'.format(self.get(row, col)) for col in range(self.cols)])
                          for row in reversed(range(self.rows))]))
+        print("   -"*self.cols)
+        print(''.join(['{:4}'.format(col) for col in range(self.cols)]))
 
-    def _check_win_in_direction(self, player_val, from_location, direction, remaining):
-        if remaining == 0:
-            return True
+    def print_replace(self, player1, player2, empty):
+        new_board = self.copy()
+        for i in range(len(self.board)):
+            new_board.board[i] = player1 if self.board[i] == Board.PLAYER_1_TOKEN \
+                else player2 if self.board[i] == Board.PLAYER_2_TOKEN \
+                else empty
 
+        new_board.print()
+
+    def _count_vertical(self, player_val, from_location):
+        return 1 + self._count_in_direction(player_val, from_location, [1,0]) \
+               + self._count_in_direction(player_val, from_location, [-1,0])
+
+    def _count_horizontal(self, player_val, from_location):
+        return 1 + self._count_in_direction(player_val, from_location, [0,1]) \
+               + self._count_in_direction(player_val, from_location, [0,-1])
+
+    def _count_positive_diagonal(self, player_val, from_location):
+        return 1 + self._count_in_direction(player_val, from_location, [1, 1]) \
+               + self._count_in_direction(player_val, from_location, [-1,-1])
+
+    def _count_negative_horizontal(self, player_val, from_location):
+        return 1 + self._count_in_direction(player_val, from_location, [1, -1]) \
+               + self._count_in_direction(player_val, from_location, [-1,1])
+
+    def _count_in_direction(self, player_val, from_location, direction):
         new_row = from_location[0] + direction[0]
         new_col = from_location[1] + direction[1]
 
-        return 0 <= new_col < self.cols and 0 <= new_row < self.rows and self.get(new_row, new_col) == player_val \
-            and self._check_win_in_direction(player_val, [new_row, new_col], direction, remaining - 1)
+        in_bounds = 0 <= new_col < self.cols and 0 <= new_row < self.rows
+
+        if (not in_bounds) or self.get(new_row, new_col) != player_val:
+            return 0
+        else:
+            return 1 + self._count_in_direction(player_val, [new_row, new_col], direction)
+
+

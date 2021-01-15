@@ -5,9 +5,9 @@ class HumanPlayer(Player):
 
     def move(self, game):
         print()
-        print(" ----------------------------------------------------------------- ")
+        print(" --------------------------------- ")
         print("  It's your turn! ")
-        print(" ----------------------------------------------------------------- ")
+        print(" --------------------------------- ")
         print()
         game.board.print_replace('X', 'O', '.')
         print()
@@ -17,14 +17,14 @@ class HumanPlayer(Player):
 
     def _on_game_over(self, game):
         print()
-        print(" ----------------------------------------------------------------- ")
+        print(" --------------------------------- ")
         if game.winner is None:
             print(" Tie Game!")
         elif game.winner == self:
             print(" You won!!!")
         else:
             print(" You lost :(")
-        print(" ----------------------------------------------------------------- ")
+        print(" --------------------------------- ")
         print()
         game.board.print_replace('X', 'O', '.')
         print()

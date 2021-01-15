@@ -81,6 +81,9 @@ if __name__ == '__main__':
         print(ex)
         sys.exit(0)
 
-    run_command(**parsed_args)
+    try:
+        run_command(**parsed_args)
+    except KeyboardInterrupt:
+        print()
+        print("Quitter!")
 
-    pass

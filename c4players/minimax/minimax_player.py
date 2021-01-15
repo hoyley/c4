@@ -7,4 +7,4 @@ class MinimaxPlayer(Player):
         super().__init__(player_id)
 
     def move(self, game):
-        return Minimax(game, 3).get_move()
+        return Minimax(game, 6).get_move()

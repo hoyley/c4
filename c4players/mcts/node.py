@@ -5,7 +5,7 @@ import random
 
 class Node:
     __slots__ = 'parent', 'children', 'player_id', 'col', 'visits', 'score'
-    EXPLORATION = 2
+    EXPLORATION = 1.5
 
     def __init__(self, parent, player_id, col):
         self.parent = parent
@@ -24,9 +24,14 @@ class Node:
         return self.children == []
 
     def ucb(self):
-        if self.visits == 0 or self.parent is None:
+        if self.parent is None:
             return math.inf
-        return self.score/self.visits + Node.EXPLORATION * ((math.log(self.parent.visits) / self.visits) ** .5)
+
+        my_visits = 1 + self.visits
+        parent_visits = 1 + self.parent.visits
+        exploration = Node.EXPLORATION if self.score >= 0 else 1/Node.EXPLORATION
+
+        return self.score/my_visits + exploration * ((math.log(parent_visits) / my_visits) ** .5)
 
     def probability(self):
         return self.score / self.visits if self.visits != 0 else 0

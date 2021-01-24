@@ -1,23 +1,28 @@
-from c4_game.c4_game_factory import C4GameFactory
-import sys
 import math
+import sys
+import traceback
 
-from c4_game.c4_players.player_factory import PlayerFactory
 from game.series import Series
+from lc_game.constants import PLAYER_2, PLAYER_1
+from lc_game.game_factory import LcGameFactory
+from lc_game.lc_players import LcMctsStrategy
+from game.players.random_player import RandomPlayer
+from game.players.mcts.mcts_player import MctsPlayer
+
+
+class LcMctsPlayer(object):
+    pass
 
 
 def read_command(argv):
     from optparse import OptionParser
     usage = """
-        USAGE:      python runner.py <options>
+        USAGE:      python lc_runner.py <options>
     """
     parser = OptionParser(usage)
 
     parser.add_option('-t', '--numTraining', dest='num_training', type='int', default=100000)
     parser.add_option('-n', '--numGames', dest='num_games', type='int', default=50)
-    parser.add_option('-r', '--numRows', dest='num_rows', type='int', default=6)
-    parser.add_option('-c', '--numCols', dest='num_cols', type='int', default=7)
-    parser.add_option('-x', '--lineLength', dest='line_length', type='int', default=4)
     parser.add_option('-p', '--printBuffer', dest='print_buffer', type='int', default=1000)
     parser.add_option('-a', '--p1strategy', dest='p1_strategy', type='string', default='<NOT_SPECIFIED>')
     parser.add_option('-b', '--p2strategy', dest='p2_strategy', type='string', default='<NOT_SPECIFIED>')
@@ -32,32 +37,16 @@ def read_command(argv):
     args = dict()
     args['num_training'] = options.num_training
     args['num_games'] = options.num_games
-    args['num_rows'] = options.num_rows
-    args['num_cols'] = options.num_cols
-    args['line_length'] = options.line_length
     args['print_buffer'] = options.print_buffer
 
-    try:
-        args['player1'] = PlayerFactory.create(options.p1_strategy, player_id=-1,
-                                               config={'load_model': options.load_models,
-                                                       'store_freq': options.store_model_freq})
-    except ValueError as ex:
-        print(ex)
-        raise ValueError('Player 1 strategy is invalid: {}'.format(options.p1_strategy)) from ex
-
-    try:
-        args['player2'] = PlayerFactory.create(options.p2_strategy, player_id=1,
-                                               config={'load_model': options.load_models,
-                                                       'store_freq': options.store_model_freq})
-    except ValueError as ex:
-        print(ex)
-        raise ValueError('Player 2 strategy is invalid: {}'.format(options.p2_strategy)) from ex
+    args['player2'] = MctsPlayer(PLAYER_2, LcMctsStrategy())
+    args['player1'] = RandomPlayer(PLAYER_1) # SplitPlayer(PLAYER_2, RandomPlayer(PLAYER_2), HumanPlayer(PLAYER_2))
 
     return args
 
 
-def run_command(player1, player2, num_training, num_games, num_rows, num_cols, line_length, print_buffer):
-    game_factory = C4GameFactory(player1, player2, num_rows, num_cols, line_length)
+def run_command(player1, player2, num_training, num_games, print_buffer):
+    game_factory = LcGameFactory(player1, player2)
 
     print()
     print('Training...')
@@ -78,7 +67,7 @@ if __name__ == '__main__':
     try:
         parsed_args = read_command(sys.argv[1:])  # Get game components based on input
     except Exception as ex:
-        print(ex)
+        traceback.print_exc()
         sys.exit(0)
 
     try:

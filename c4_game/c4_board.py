@@ -1,10 +1,11 @@
 from typing import List
 
 from c4_game.c4_action import C4Action
+from game.action import Action
 from game.board import Board
 
 
-class C4Board(Board, C4Action):
+class C4Board(Board[C4Action]):
     PLAYER_1_TOKEN, PLAYER_2_TOKEN, EMPTY_TOKEN = 1, -1, 0
 
     def __init__(self, rows: int, cols: int, line_length: int):
@@ -40,13 +41,17 @@ class C4Board(Board, C4Action):
     def get_valid_cols(self) -> List[int]:
         return [c for c, count in enumerate(self.col_counts) if count < self.rows]
 
+    def get_valid_actions(self) -> List[Action]:
+        player_id = self.get_current_player_id()
+        return [C4Action(player_id, c) for c, count in enumerate(self.col_counts) if count < self.rows]
+
     def get(self, row, col):
         return self.board[row * self.cols + col]
 
     def set(self, row, col, value):
         self.board[row * self.cols + col] = value
 
-    def undo_move(self):
+    def undo_action(self):
         last_played = self._last_action.pop()
 
         if last_played is not None:
@@ -65,6 +70,12 @@ class C4Board(Board, C4Action):
                self._count_horizontal(player_val, start_location) >= self.line_length or \
                self._count_positive_diagonal(player_val, start_location) >= self.line_length or \
                self._count_negative_horizontal(player_val, start_location) >= self.line_length
+
+    def get_current_player_id(self):
+        last_action = self.get_last_action()
+
+        return self.PLAYER_1_TOKEN if not last_action or last_action.player_id == self.PLAYER_2_TOKEN \
+            else self.PLAYER_2_TOKEN
 
     def print(self):
         print('\n'.join([''.join(['{:>4}'.format(self.get(row, col)) for col in range(self.cols)])

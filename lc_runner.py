@@ -2,12 +2,12 @@ import math
 import sys
 import traceback
 
+from game.players.mcts.mcts_player import MctsPlayer
+from game.players.random_player import RandomPlayer
 from game.series import Series
 from lc_game.constants import PLAYER_2, PLAYER_1
 from lc_game.game_factory import LcGameFactory
-from lc_game.lc_players import LcMctsStrategy
-from game.players.random_player import RandomPlayer
-from game.players.mcts.mcts_player import MctsPlayer
+from lc_game.lc_players.lc_mcts_strategy import LcMctsStrategy
 
 
 class LcMctsPlayer(object):

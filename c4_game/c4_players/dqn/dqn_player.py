@@ -1,14 +1,14 @@
-from collections import deque
-
 import math
-import numpy as np # type: ignore
 import os
 import random
-from game.util import create_path
-from keras.layers import Dense # type: ignore
-from keras.models import Sequential # type: ignore
+from collections import deque
+
+import numpy as np  # type: ignore
+from keras.layers import Dense  # type: ignore
+from keras.models import Sequential  # type: ignore
 
 from game.player import Player
+from game.util import create_path
 
 
 class DqnPlayer(Player):
@@ -40,7 +40,7 @@ class DqnPlayer(Player):
         create_path(DqnPlayer.checkpoint_path_target_model)
 
     def move(self, game):
-        self._initialize(game.board.cols)
+        self._initialize()
         state, available_moves = self._observe(game)
 
         # This is actually our "current action" but it will be stored as "previous action" for the next move
@@ -66,7 +66,7 @@ class DqnPlayer(Player):
 
     def _observe(self, game):
         current_state = game.board.board.copy()
-        available_moves = game.board.get_valid_moves()
+        available_moves = game.board.get_valid_actions()
 
         if self.previous_state and game.is_training:
             reward = 1 if game.winner is not None and game.winner.player_id == self.player_id \
@@ -91,9 +91,10 @@ class DqnPlayer(Player):
         #   but I might have to solve this instead by allowing the move and it resulting in a negative reward.
         #   I'm not sure the affect this has on predictions in the replay method as they don't exclude invalid moves
         for i in range(7):
-            prediction[i] = prediction[i] if i in available_moves else -math.inf
+            prediction[i] = prediction[i] if i in map(lambda m: m.col, available_moves) else -math.inf
 
-        return np.argmax(prediction)
+        col_num = np.argmax(prediction)
+        return [move for move in available_moves if move.col == col_num][0]
 
     def _replay(self):
         batch_size = 32
@@ -105,10 +106,10 @@ class DqnPlayer(Player):
             state, action, reward, new_state, done = sample
             target = self.target_model.predict(state)
             if done:
-                target[0][action] = reward
+                target[0][action.col] = reward
             else:
                 q_future = max(self.target_model.predict(new_state)[0])
-                target[0][action] = reward + q_future * self.gamma
+                target[0][action.col] = reward + q_future * self.gamma
 
             self.model.fit(state, target, epochs=1, verbose=0)
 
@@ -124,15 +125,13 @@ class DqnPlayer(Player):
         self.epsilon = max(self.epsilon_min, self.epsilon)
         return self.epsilon
 
-    def _initialize(self, num_cols):
+    def _initialize(self):
         if not self.model:
             self.model = self._build_model(self.loss_func, self.optimizer, self.layers)
             self.target_model = self._build_model(self.loss_func, self.optimizer, self.layers)
 
-            if self.load_model:
+            if self._load_model:
                 self.load_state()
-
-            print(self.model.summary())
 
     @staticmethod
     def _build_model(loss_func, optimizer, layers):

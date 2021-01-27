@@ -1,4 +1,3 @@
-from lc_game.lc_board import LcBoard
 from lc_game.card import Card
 from lc_game.constants import NUMBER_OF_SUITS
 

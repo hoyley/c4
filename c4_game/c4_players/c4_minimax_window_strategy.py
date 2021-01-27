@@ -1,39 +1,40 @@
+from c4_game.c4_board import C4Board
+from game.players.minimax.minimax_strategy import MinimaxStrategy
 
 
-class WindowHeuristic:
-
+class C4MinimaxWindowStrategy(MinimaxStrategy[C4Board]):
     NORTH = [1, 0]
     EAST = [0, 1]
     NORTH_EAST = [1, 1]
     SOUTH_EAST = [-1, 1]
 
-    def __init__(self, player_id, opponent_id):
-        self.player_id = player_id
-        self.opponent_id = opponent_id
-
-    def score_board(self, board):
-        window_counts = WindowHeuristic.WindowCounts()
+    def get_score(self, board: C4Board, player_id, opponent_id) -> int:
+        window_counts = C4MinimaxWindowStrategy.WindowCounts()
 
         # Count in horizontal orientation
         for row in range(board.rows):
             for col in range(board.cols - (board.line_length - 1)):
-                self.count_window_contents(board, row, col, WindowHeuristic.EAST, window_counts)
+                self.count_window_contents(board, row, col, C4MinimaxWindowStrategy.EAST, window_counts, player_id,
+                                           opponent_id)
         # Count in vertical orientation
         for row in range(board.rows - (board.line_length - 1)):
             for col in range(board.cols):
-                self.count_window_contents(board, row, col, WindowHeuristic.NORTH, window_counts)
+                self.count_window_contents(board, row, col, C4MinimaxWindowStrategy.NORTH, window_counts, player_id,
+                                           opponent_id)
         # Count in positive diagonal
         for row in range(board.rows - (board.line_length - 1)):
             for col in range(board.cols - (board.line_length - 1)):
-                self.count_window_contents(board, row, col, WindowHeuristic.NORTH_EAST, window_counts)
+                self.count_window_contents(board, row, col, C4MinimaxWindowStrategy.NORTH_EAST, window_counts,
+                                           player_id, opponent_id)
         # Count in negative diagonal
         for row in range(board.line_length - 1, board.rows):
             for col in range(board.cols - (board.line_length - 1)):
-                self.count_window_contents(board, row, col, WindowHeuristic.SOUTH_EAST, window_counts)
+                self.count_window_contents(board, row, col, C4MinimaxWindowStrategy.SOUTH_EAST, window_counts,
+                                           player_id, opponent_id)
 
         return window_counts.get_score()
 
-    def count_window_contents(self, board, start_row, start_col, direction, window_counts):
+    def count_window_contents(self, board, start_row, start_col, direction, window_counts, player_id, opponent_id):
         num_player = 0
         num_opponent = 0
         num_empty = 0
@@ -47,9 +48,9 @@ class WindowHeuristic:
                 break
 
             val = board.get(cur_row, cur_col)
-            if val == self.player_id:
+            if val == player_id:
                 num_player += 1
-            elif val == self.opponent_id:
+            elif val == opponent_id:
                 num_opponent += 1
             else:
                 num_empty += 1

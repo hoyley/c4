@@ -1,6 +1,5 @@
-from abc import abstractmethod
 import math
-
+from abc import abstractmethod
 from typing import Dict
 
 from game.action import Action

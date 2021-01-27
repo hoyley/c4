@@ -1,5 +1,3 @@
-import random
-
 from game.player import Player
 from lc_game.console_utils import ConsoleUtils
 

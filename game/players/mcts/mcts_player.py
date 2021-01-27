@@ -1,10 +1,10 @@
 import os
 from pickle import dump, load
 
+from game.player import Player
 from game.players.mcts.mcts_traversal import MctsTraversal
 from game.players.mcts.node import Node
 from game.util import create_path
-from game.player import Player
 
 
 class MctsPlayer(Player):

@@ -1,4 +1,3 @@
-from game.board import Board
 from game.two_player_turn_based_game import TwoPlayerTurnBasedGame
 
 
@@ -41,7 +40,7 @@ class MctsTraversal:
     def _update_opponents_move(self, board):
         opponent_actions = self.mcts_strategy.get_opponent_moves_to_advance(board)
 
-        for action in opponent_actions:
+        for action in opponent_actions or []:
             self._advance_move(action)
 
     def _advance_move(self, action):

@@ -1,8 +1,10 @@
-from lc_game.lc_action import LcAction
+import bisect
+
 from lc_game.card import Card
 from lc_game.constants import NUMBER_OF_SUITS, HAND_SIZE
+from lc_game.lc_action import LcAction
 from lc_game.rules_error import RulesError
-import bisect
+
 
 class PlayerState:
     def __init__(self, player_number):

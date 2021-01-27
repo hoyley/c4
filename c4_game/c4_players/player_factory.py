@@ -1,7 +1,8 @@
 from c4_game.c4_players.c4_human_player import C4HumanPlayer
 from c4_game.c4_players.c4_mcts_strategy import C4MctsStrategy
-from c4_game.c4_players.minimax.minimax_player import MinimaxPlayer
+from c4_game.c4_players.c4_minimax_window_strategy import C4MinimaxWindowStrategy
 from game.players.mcts.mcts_player import MctsPlayer
+from game.players.minimax.minimax_player import MinimaxPlayer
 from game.players.random_player import RandomPlayer
 from game.players.split_player import SplitPlayer
 
@@ -14,10 +15,10 @@ class PlayerFactory:
         elif strategy_name == 'mcts':
             return MctsPlayer(player_id, C4MctsStrategy(), config)
         elif strategy_name == 'dqn':
-            from c4_game.c4_players import DqnPlayer
+            from c4_game.c4_players.dqn.dqn_player import DqnPlayer
             return DqnPlayer(player_id, config)
         elif strategy_name == 'minimax':
-            return MinimaxPlayer(player_id)
+            return MinimaxPlayer(player_id, C4MinimaxWindowStrategy())
         elif strategy_name == 'human':
             return C4HumanPlayer(player_id)
         elif ',' in strategy_name:

@@ -6,3 +6,4 @@ dependencies:
   - keras
   - pandas
   - pickle5
+  - mypy

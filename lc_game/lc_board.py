@@ -1,15 +1,16 @@
 import random
+from typing import List
 
+from game.action import Action
 from game.board import Board as GameBoard
-
-from lc_game.lc_action import LcAction
 from lc_game.card import Card
 from lc_game.constants import PLAYER_1, PLAYER_2, NUMBER_OF_SUITS
+from lc_game.lc_action import LcAction
 from lc_game.player_state import PlayerState
 from lc_game.rules_error import RulesError
 
 
-class LcBoard(GameBoard):
+class LcBoard(GameBoard[LcAction]):
     def __init__(self):
         super().__init__()
         self.player_1_state = PlayerState(PLAYER_1)
@@ -36,13 +37,13 @@ class LcBoard(GameBoard):
             player_state.add_to_hand(action.card)
         super().play(action)
 
-    def get_valid_actions(self):
+    def get_valid_actions(self) -> List[Action]:
         player_id = self.get_current_player()
         player_state = self.get_current_player_state()
         last_action = self.get_last_action()
         must_give_card = last_action is None or last_action.player_id != player_id
 
-        actions = []
+        actions: List[Action] = []
 
         # The game is over if the desk is empty
         if not self.deck:
@@ -121,7 +122,7 @@ class LcBoard(GameBoard):
                 opponent_actions.append(self._last_action[i])
         return reversed(opponent_actions)
 
-    def undo_move(self):
+    def undo_action(self):
         last_action = self.last_played[-1] if self.last_played else None
         player_state = self.get_player_state(last_action.player_id)
 

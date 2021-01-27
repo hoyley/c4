@@ -10,5 +10,5 @@ class RandomPlayer(Player):
         super().__init__(player_id, config)
 
     def move(self, game):
-        return random.choice(game.board.get_valid_actions())
+        return random.choice(game.get_valid_actions())
 

@@ -1,7 +1,7 @@
-from c4_game.c4_game_factory import C4GameFactory
-import sys
 import math
+import sys
 
+from c4_game.c4_game_factory import C4GameFactory
 from c4_game.c4_players.player_factory import PlayerFactory
 from game.series import Series
 

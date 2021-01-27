@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from game.action import Action
 from lc_game.card import Card
 
